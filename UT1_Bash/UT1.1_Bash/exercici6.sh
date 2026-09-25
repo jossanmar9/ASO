@@ -10,3 +10,7 @@
 # al archivo lista.txt.
 #
 # Solucion:
+
+echo "Escriu una paraula: "
+read paraula
+echo "$paraula" >> lista.txt

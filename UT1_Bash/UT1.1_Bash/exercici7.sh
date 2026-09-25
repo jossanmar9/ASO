@@ -9,3 +9,8 @@
 # fecha en formato yyyy-mm-dd seguido del directorio acabado en .tar.gz.
 #
 # Solucion:
+
+
+data=$(date +"%Y-%m-%d")
+
+tar -czf ${data}-${1}.tar.gz $1
