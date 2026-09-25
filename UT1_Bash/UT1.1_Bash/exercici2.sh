@@ -9,3 +9,6 @@
 # dicho listado.
 #
 # Solucion:
+
+ls /etc > listado
+cat listado

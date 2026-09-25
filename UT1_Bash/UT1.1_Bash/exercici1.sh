@@ -7,3 +7,5 @@
 # Crea un shell script que muestre por pantalla el mensaje "¡Hola Mundo!".
 #
 # Solucion:
+
+echo "Hola Mundo!"
