@@ -11,3 +11,14 @@
 # Para obtener la hora del sistema utiliza el comando date.
 #
 # Solucion:
+
+hora=$(date +"%H")
+
+if [ "$hora" -ge 8 ] && [ "$hora" -lt 15 ]; then
+    echo "Bon dia"
+elif
+    [ "$hora" -ge 15 ] && [ "$hora" -lt 20 ]; then
+    echo "Bona vesprada"
+else
+    echo "Bona nit"
+fi

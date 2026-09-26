@@ -18,3 +18,24 @@
 # de error indicativo.
 #
 # Solucion:
+if [ "$#" -ne 2 ]; then
+    echo "Error: has d'indicar dos paràmetres."
+    echo "Ús: $0 fitxer_origen fitxer_desti"
+    exit 1
+fi
+
+if [ ! -f "$1" ]; then
+    echo "Error: $1 no existeix o no és un fitxer."
+    exit 1
+fi
+
+
+if [ -e "$2" ]; then
+    echo "Error: $2 ja existeix."
+    exit 1
+fi
+
+
+cp "$1" "$2"
+
+echo "Fitxer copiat correctament."

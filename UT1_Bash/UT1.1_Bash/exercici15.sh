@@ -9,3 +9,10 @@
 # i x n = resultado
 #
 # Solucion:
+
+numero="$1"
+
+for i in {1..10}; do
+    resultat=$((i * numero))
+    echo "$i x $numero = $resultat"
+done

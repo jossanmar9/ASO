@@ -21,3 +21,38 @@
 # En cualquier otro caso se mostrara un error indicando la sintaxis correcta.
 #
 # Solucion:
+
+accio="$1"
+nom="$2"
+cognom1="$3"
+cognom2="$4"
+grup="$5"
+
+identitat="alu${cognom1:0:2}${cognom2:0:2}${nom:0:1}"
+identitat="${identitat,,}"
+
+if [ "$#" -lt 4 ]; then
+        echo "No s'han passat tots els parametres, has d'indicar si vols alta/baixa, nom, cognom1, cognom2 i grup (opcional)"
+        exit 1
+    else
+        echo "El nom de l'usuari serà: $identitat"
+    fi
+
+case "$accio" in
+    alta) if [ -z "$grup" ]; then
+        sudo groupadd "$identitat"
+        sudo useradd -m -g "$identitat" "$identitat"
+    else
+        sudo useradd -m -g "$grup" "$identitat"
+    fi
+
+    echo "Usuari $identitat creat correctament" ;;
+    baixa)
+        sudo userdel -r "$identitat"
+    echo "Usuari $identitat eliminat correctament"
+    ;;
+    *)
+        echo "Error: has d'indicar alta o baixa"
+        exit 1
+        ;;
+esac
