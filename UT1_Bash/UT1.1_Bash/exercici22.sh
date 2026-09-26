@@ -11,3 +11,21 @@
 # Al final debe indicar el numero total de entradas procesadas.
 #
 # Solucion:
+
+directori="$1"
+comptador=0
+
+for element in "$directori"/*; do
+
+    if [ -f "$element" ]; then
+        echo "$element és un fitxer"
+
+    elif [ -d "$element" ]; then
+        echo "$element és un directori"
+    fi
+
+    comptador=$((comptador + 1))
+
+done
+
+echo "Total d'elements processats: $comptador"

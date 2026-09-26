@@ -11,3 +11,25 @@
 # El juego termina si se averigua el numero o se introduce un 0.
 #
 # Solucion:
+
+secret=42
+numero=-1
+
+while [ "$numero" -ne "$secret" ] && [ "$numero" -ne 0 ]; do
+
+    read -p "Introdueix un número entre 1 i 100 (0 per rendir-te): " numero
+
+    if [ "$numero" -eq 0 ]; then
+        echo "T'has rendit. El número era $secret."
+
+    elif [ "$numero" -eq "$secret" ]; then
+        echo "Enhorabona! Has encertat el número."
+
+    elif [ "$numero" -lt "$secret" ]; then
+        echo "El número secret és major."
+
+    else
+        echo "El número secret és menor."
+    fi
+
+done
