@@ -8,3 +8,10 @@
 # indicado en el enunciado de la practica.
 #
 # Solucion:
+
+for i in {1..5}; do
+    for ((n=1; n<=i; n++)); do
+        echo -n "$n"
+    done
+    echo
+done

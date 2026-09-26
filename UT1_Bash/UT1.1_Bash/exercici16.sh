@@ -8,3 +8,27 @@
 # una estructura for, while y until.
 #
 # Solucion:
+
+suma=0
+
+for i in {1..1000}; do
+    suma=$((suma + 1))
+done
+
+echo "La suma amb for és: $suma"
+
+suma=0
+
+while [ "$suma" -lt 1000 ]; do
+    suma=$((suma + 1))
+done
+
+echo "La suma amb while és: $suma"
+
+suma=0
+
+until [ "$suma" -eq 1000 ]; do
+    suma=$((suma + 1))
+done
+
+echo "La suma amb until és: $suma"

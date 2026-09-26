@@ -9,3 +9,14 @@
 # En ese caso se mostrara el ultimo resultado y terminara el script.
 #
 # Solucion:
+
+suma=0
+
+read -p "Introdueix un número (0 per acabar): " numero
+
+while [ "$numero" -ne 0 ]; do
+    suma=$((suma + numero))
+    read -p "Introdueix un altre número (0 per acabar): " numero
+done
+
+echo "La suma total és: $suma"
