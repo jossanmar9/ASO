@@ -17,3 +17,9 @@
 # - El script no usa read; el nombre llega como $1.
 
 # Solución:
+
+if [ -z "$1" ]; then
+    echo "Debes indicar el nombre del servicio"
+else
+    echo "Iniciando el servicio $1..."
+fi

@@ -19,3 +19,13 @@
 # - Usa elif para encadenar las tres condiciones.
 
 # Solución:
+
+porcentaje=$(( $1 * 100 / $2 )) 
+
+if [ $porcentaje -lt 70 ]; then
+    echo "OK, el uso del disco es menos que el 70%"
+elif [ $porcentaje -le 89 ]; then
+    echo "Aviso, el uso del disco está entre el 70% y el 89%"
+else
+    echo "Crítico, el uso del disco es igual o superior al 90%"
+fi
