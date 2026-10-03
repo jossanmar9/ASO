@@ -20,3 +20,13 @@
 # - El número exacto de líneas puede variar según los ficheros existentes.
 
 # Solución:
+
+for entrada in ~/prueba_bash/*; do
+    nombre=$(basename "$entrada")
+
+    if [ -d "$entrada" ]; then
+        echo "$nombre directorio"
+    elif [ -f "$entrada" ]; then
+        echo "$nombre fichero"
+    fi
+done

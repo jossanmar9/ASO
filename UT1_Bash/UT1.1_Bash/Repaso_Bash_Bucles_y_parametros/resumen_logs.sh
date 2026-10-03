@@ -33,3 +33,12 @@
 # monitorización real.
 
 # Solución:
+
+for fichero in "$1"/*.log; do
+    nombre=$(basename "$fichero")
+    errores=$(grep -c ERROR "$fichero")
+    warnings=$(grep -c WARNING "$fichero")
+    echo "$nombre → $warnings WARNING, $errores ERROR"
+done
+
+#El script solamente busca los logs de la carpeta indicada, no los de las subcarpetas, no sería muy correcto ya que tendríamos que ejecutar el script una vez por carpeta.
