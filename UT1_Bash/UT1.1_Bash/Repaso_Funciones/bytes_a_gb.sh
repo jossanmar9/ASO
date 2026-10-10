@@ -17,3 +17,10 @@
 # - bytes_a_gb 1073741824 → 1.00
 
 # Solución:
+
+bytes_a_gb() {
+    echo "scale=2; $1 / 1073741824" | bc
+}
+
+bytes_a_gb 5000000000
+bytes_a_gb 1073741824
