@@ -1,69 +1,69 @@
 # 🐚 Chuleta de Bash — UT1
 
-> Explicat des de zero. Cada apartat té: **què és**, **un exemple** i **què ix per pantalla**.
+> Explicado desde cero. Cada apartado tiene: **qué es**, **un ejemplo** y **qué sale por pantalla**.
 
 ---
 
-## 1. Què és un script?
+## 1. ¿Qué es un script?
 
-Un script és un **fitxer de text amb ordres** que s'executen una darrere de l'altra, com si les escrigueres tu a la terminal.
+Un script es un **fichero de texto con órdenes** que se ejecutan una detrás de otra, como si las escribieras tú en la terminal.
 
 ```bash
 #!/bin/bash
-echo "Hola món"
+echo "Hola mundo"
 ```
-- La **primera línia** (`#!/bin/bash`) sempre és igual. Diu "executa açò amb Bash".
-- `echo` **mostra un text** per pantalla.
-- Les línies que comencen per `#` són **comentaris**: notes per a tu, Bash les ignora.
+- La **primera línea** (`#!/bin/bash`) siempre es igual. Dice "ejecuta esto con Bash".
+- `echo` **muestra un texto** por pantalla.
+- Las líneas que empiezan por `#` son **comentarios**: notas para ti, Bash las ignora.
 
-**Com executar-lo:**
+**Cómo ejecutarlo:**
 ```bash
-chmod +x hola.sh     # 1. donar-li permís (només la primera vegada)
-./hola.sh            # 2. executar-lo
+chmod +x hola.sh     # 1. darle permiso (solo la primera vez)
+./hola.sh            # 2. ejecutarlo
 ```
-Ix: `Hola món`
+Sale: `Hola mundo`
 
 ---
 
-## 2. ⚠️ Els errors més típics
+## 2. ⚠️ Los errores más típicos
 
-| ❌ Així NO | ✅ Així SÍ | Per què |
+| ❌ Así NO | ✅ Así SÍ | Por qué |
 |---|---|---|
-| `nom = Jose` | `nom=Jose` | Per a guardar, **sense espais** al `=` |
-| `echo nom` | `echo $nom` | Per a llegir una variable, **amb `$`** |
-| `[-z $1]` | `[ -z $1 ]` | Dins dels `[ ]` **sempre espais** |
-| `if [ ... ]` i ja | `if [ ... ]; then` | Després de la condició va **`then`** |
+| `nombre = Jose` | `nombre=Jose` | Para guardar, **sin espacios** en el `=` |
+| `echo nombre` | `echo $nombre` | Para leer una variable, **con `$`** |
+| `[-z $1]` | `[ -z $1 ]` | Dentro de los `[ ]` **siempre espacios** |
+| `if [ ... ]` y ya | `if [ ... ]; then` | Después de la condición va **`then`** |
 
 ---
 
-## 3. Variables (caixes per a guardar coses)
+## 3. Variables (cajas para guardar cosas)
 
-Una variable és una **caixa amb nom** on guardes un valor.
+Una variable es una **caja con nombre** donde guardas un valor.
 
 ```bash
-nom="Jose"              # GUARDAR: sense $ i sense espais
-echo "Hola $nom"        # LLEGIR: amb $
+nombre="Jose"              # GUARDAR: sin $ y sin espacios
+echo "Hola $nombre"        # LEER: con $
 ```
-Ix: `Hola Jose`
+Sale: `Hola Jose`
 
-**Guardar el resultat d'una ordre** → `$( ordre )`
+**Guardar el resultado de una orden** → `$( orden )`
 ```bash
-avui=$(date)
-echo "Hui és $avui"
+hoy=$(date)
+echo "Hoy es $hoy"
 ```
 
-**Guardar el resultat d'un compte** → `$(( compte ))`
+**Guardar el resultado de una cuenta** → `$(( cuenta ))`
 ```bash
 suma=$(( 3 + 4 ))
 echo $suma
 ```
-Ix: `7`
+Sale: `7`
 
 ---
 
-## 4. Arguments (dades que passes en executar)
+## 4. Argumentos (datos que pasas al ejecutar)
 
-Pots passar-li dades al script en executar-lo. Bash les guarda en `$1`, `$2`...
+Puedes pasarle datos al script al ejecutarlo. Bash los guarda en `$1`, `$2`...
 
 ```bash
 ./saluda.sh Jose Maria
@@ -71,190 +71,190 @@ Pots passar-li dades al script en executar-lo. Bash les guarda en `$1`, `$2`...
 ```
 ```bash
 #!/bin/bash
-echo "Hola $1 i $2"
+echo "Hola $1 y $2"
 ```
-Ix: `Hola Jose i Maria`
+Sale: `Hola Jose y Maria`
 
-| Variable | Què conté |
+| Variable | Qué contiene |
 |---|---|
-| `$1`, `$2`... | el 1r, 2n... argument |
-| `$#` | **quants** arguments m'han passat |
-| `$0` | el nom del script |
-| `$?` | si l'última ordre ha anat bé (`0`) o malament (un altre número) |
+| `$1`, `$2`... | el 1.º, 2.º... argumento |
+| `$#` | **cuántos** argumentos me han pasado |
+| `$0` | el nombre del script |
+| `$?` | si la última orden ha ido bien (`0`) o mal (otro número) |
 
 ---
 
-## 5. Preguntar a l'usuari
+## 5. Preguntar al usuario
 
 ```bash
-read -p "Com et dius? " nom
-echo "Hola $nom"
+read -p "¿Cómo te llamas? " nombre
+echo "Hola $nombre"
 ```
-El script **s'espera** a que escrigues alguna cosa i la guarda en `nom`.
+El script **se espera** a que escribas algo y lo guarda en `nombre`.
 
-> Si l'enunciat diu "**com a argument**", usa `$1`, **no** `read`.
+> Si el enunciado dice "**como argumento**", usa `$1`, **no** `read`.
 
 ---
 
-## 6. Comptes
+## 6. Cuentas
 
 ```bash
 echo $(( 10 + 3 ))   # 13  suma
 echo $(( 10 - 3 ))   # 7   resta
-echo $(( 10 * 3 ))   # 30  multiplicació
-echo $(( 10 / 3 ))   # 3   divisió (SENSE decimals!)
-echo $(( 10 % 3 ))   # 1   el que sobra de la divisió
+echo $(( 10 * 3 ))   # 30  multiplicación
+echo $(( 10 / 3 ))   # 3   división (¡SIN decimales!)
+echo $(( 10 % 3 ))   # 1   lo que sobra de la división
 ```
 
-**Sumar 1 a una variable** (per a comptar):
+**Sumar 1 a una variable** (para contar):
 ```bash
 i=$(( i + 1 ))
 ```
 
-**Percentatges:** multiplica **primer**, divideix **després**.
+**Porcentajes:** multiplica **primero**, divide **después**.
 ```bash
 echo $(( 35 * 100 / 100 ))   # 35 ✅
-echo $(( 35 / 100 * 100 ))   # 0  ❌ (35/100 dona 0 sense decimals)
+echo $(( 35 / 100 * 100 ))   # 0  ❌ (35/100 da 0 sin decimales)
 ```
 
-**Si necessites decimals**, usa `bc`:
+**Si necesitas decimales**, usa `bc`:
 ```bash
 echo "scale=2; 10 / 3" | bc
 ```
-Ix: `3.33` (`scale=2` = 2 decimals)
+Sale: `3.33` (`scale=2` = 2 decimales)
 
 ---
 
-## 7. Prendre decisions: `if`
+## 7. Tomar decisiones: `if`
 
-"**Si** passa açò, **fes** això. **Si no**, fes això altre."
+"**Si** pasa esto, **haz** eso. **Si no**, haz esto otro."
 
 ```bash
-if [ $edat -ge 18 ]; then
-    echo "Major d'edat"
+if [ $edad -ge 18 ]; then
+    echo "Mayor de edad"
 else
-    echo "Menor d'edat"
+    echo "Menor de edad"
 fi
 ```
 - `if` = si
-- `then` = aleshores
+- `then` = entonces
 - `else` = si no
-- `fi` = final (és `if` al revés)
+- `fi` = final (es `if` al revés)
 
-**Amb més de dues opcions** → `elif` ("si no, però si..."):
+**Con más de dos opciones** → `elif` ("si no, pero si..."):
 ```bash
 if [ $nota -ge 9 ]; then
-    echo "Excel·lent"
+    echo "Sobresaliente"
 elif [ $nota -ge 5 ]; then
-    echo "Aprovat"
+    echo "Aprobado"
 else
-    echo "Suspés"
+    echo "Suspenso"
 fi
 ```
-Va mirant **de dalt a baix** i fa **només la primera** que es complix.
+Va mirando **de arriba abajo** y hace **solo la primera** que se cumple.
 
 ### Comparar números
 
-| Escriu | Vol dir | Truc per a recordar-ho |
+| Escribe | Significa | Truco para recordarlo |
 |---|---|---|
 | `-eq` | igual a | **eq**ual |
-| `-ne` | diferent de | **n**ot **e**qual |
-| `-gt` | major que | **g**reater **t**han |
-| `-ge` | major o igual que | **g**reater or **e**qual |
+| `-ne` | distinto de | **n**ot **e**qual |
+| `-gt` | mayor que | **g**reater **t**han |
+| `-ge` | mayor o igual que | **g**reater or **e**qual |
 | `-lt` | menor que | **l**ess **t**han |
 | `-le` | menor o igual que | **l**ess or **e**qual |
 
-### Comparar text
+### Comparar texto
 
-| Escriu | Vol dir |
+| Escribe | Significa |
 |---|---|
-| `[ "$a" = "$b" ]` | són iguals |
-| `[ "$a" != "$b" ]` | són diferents |
-| `[ -z "$a" ]` | està **buit** |
-| `[ -n "$a" ]` | **no** està buit |
+| `[ "$a" = "$b" ]` | son iguales |
+| `[ "$a" != "$b" ]` | son distintos |
+| `[ -z "$a" ]` | está **vacío** |
+| `[ -n "$a" ]` | **no** está vacío |
 
-### Preguntar per fitxers i carpetes
+### Preguntar por ficheros y carpetas
 
-| Escriu | Pregunta |
+| Escribe | Pregunta |
 |---|---|
-| `[ -e "$x" ]` | existix? |
-| `[ -f "$x" ]` | és un **fitxer**? |
-| `[ -d "$x" ]` | és una **carpeta**? |
+| `[ -e "$x" ]` | ¿existe? |
+| `[ -f "$x" ]` | ¿es un **fichero**? |
+| `[ -d "$x" ]` | ¿es una **carpeta**? |
 
-### Dues condicions alhora
+### Dos condiciones a la vez
 
 ```bash
-if [[ $n -ge 1 && $n -le 10 ]]; then echo "Entre 1 i 10"; fi
+if [[ $n -ge 1 && $n -le 10 ]]; then echo "Entre 1 y 10"; fi
 ```
-- `&&` = **i** (s'han de complir les dues)
-- `||` = **o** (n'hi ha prou amb una)
+- `&&` = **y** (se tienen que cumplir las dos)
+- `||` = **o** (basta con una)
 - `!` = **no** (al revés)
 
-> `[[ ]]` (doble) és una versió millorada de `[ ]` que permet usar `&&` i `||` dins.
+> `[[ ]]` (doble) es una versión mejorada de `[ ]` que permite usar `&&` y `||` dentro.
 
-### Comprovar si una ordre funciona
+### Comprobar si una orden funciona
 
-L'`if` també pot mirar si una ordre ha anat bé:
+El `if` también puede mirar si una orden ha ido bien:
 ```bash
 if id jose &>/dev/null; then
-    echo "L'usuari jose existix"
+    echo "El usuario jose existe"
 fi
 ```
-`&>/dev/null` = "no em mostres res, només vull saber si ha funcionat".
+`&>/dev/null` = "no me muestres nada, solo quiero saber si ha funcionado".
 
 ---
 
-## 8. Molts casos: `case`
+## 8. Muchos casos: `case`
 
-Quan una variable pot tindre **molts valors** diferents. Més net que molts `elif`.
+Cuando una variable puede tener **muchos valores** distintos. Más limpio que muchos `elif`.
 
 ```bash
-case $opcio in
-    1) echo "Has triat u" ;;
-    2) echo "Has triat dos" ;;
-    *) echo "Opció no vàlida" ;;
+case $opcion in
+    1) echo "Has elegido uno" ;;
+    2) echo "Has elegido dos" ;;
+    *) echo "Opción no válida" ;;
 esac
 ```
-- `*)` = **qualsevol altra cosa**
-- Cada opció acaba en `;;`
-- `esac` = final (és `case` al revés)
+- `*)` = **cualquier otra cosa**
+- Cada opción acaba en `;;`
+- `esac` = final (es `case` al revés)
 
 ---
 
-## 9. Repetir coses: bucles
+## 9. Repetir cosas: bucles
 
-### `for`: per a cada element d'una llista
+### `for`: para cada elemento de una lista
 ```bash
-for fruita in poma pera plàtan; do
-    echo "M'agrada la $fruita"
+for fruta in manzana pera plátano; do
+    echo "Me gusta la $fruta"
 done
 ```
-Ix:
+Sale:
 ```
-M'agrada la poma
-M'agrada la pera
-M'agrada la plàtan
+Me gusta la manzana
+Me gusta la pera
+Me gusta la plátano
 ```
-A cada volta, `fruita` agafa el **següent** valor.
+En cada vuelta, `fruta` coge el **siguiente** valor.
 
-### `for` amb fitxers ⭐
-`*` vol dir "**tot el que hi ha** en la carpeta":
+### `for` con ficheros ⭐
+`*` significa "**todo lo que hay** en la carpeta":
 ```bash
-for fitxer in ~/Documents/*; do
-    echo "$fitxer"
+for fichero in ~/Documentos/*; do
+    echo "$fichero"
 done
 ```
-Mostra cada fitxer de la carpeta, un per línia.
+Muestra cada fichero de la carpeta, uno por línea.
 
-### `for` per a comptar
+### `for` para contar
 ```bash
 for (( i=1; i<=5; i++ )); do
-    echo "Volta $i"
+    echo "Vuelta $i"
 done
 ```
-Ix: `Volta 1`, `Volta 2`... fins a `Volta 5`.
+Sale: `Vuelta 1`, `Vuelta 2`... hasta `Vuelta 5`.
 
-### `while`: mentre es complisca
+### `while`: mientras se cumpla
 ```bash
 i=1
 while [ $i -le 3 ]; do
@@ -262,124 +262,124 @@ while [ $i -le 3 ]; do
     i=$(( i + 1 ))
 done
 ```
-Ix: `1 2 3`
-> ⚠️ Si oblides el `i=$(( i + 1 ))`, no para mai (bucle infinit). Per a parar-lo: **Ctrl + C**.
+Sale: `1 2 3`
+> ⚠️ Si olvidas el `i=$(( i + 1 ))`, no para nunca (bucle infinito). Para pararlo: **Ctrl + C**.
 
-### `until`: fins que es complisca
-És el contrari de `while`: repetix **fins que** la condició siga certa.
+### `until`: hasta que se cumpla
+Es lo contrario de `while`: repite **hasta que** la condición sea cierta.
 ```bash
-until [ "$resposta" = "si" ]; do
-    read -p "Vols eixir? " resposta
+until [ "$respuesta" = "si" ]; do
+    read -p "¿Quieres salir? " respuesta
 done
 ```
 
-### Eixir o saltar
-| Escriu | Què fa |
+### Salir o saltar
+| Escribe | Qué hace |
 |---|---|
-| `break` | **ix** del bucle ja |
-| `continue` | **salta** a la volta següent |
+| `break` | **sale** del bucle ya |
+| `continue` | **salta** a la vuelta siguiente |
 
-**Exemple:** preguntar fins que la resposta siga bona
+**Ejemplo:** preguntar hasta que la respuesta sea buena
 ```bash
-while true; do                     # repetix per sempre...
-    read -p "Número entre 1 i 10: " n
+while true; do                     # repite para siempre...
+    read -p "Número entre 1 y 10: " n
     if [[ $n -ge 1 && $n -le 10 ]]; then
-        break                      # ...fins que és correcte
+        break                      # ...hasta que es correcto
     fi
-    echo "No vàlid, torna a provar"
+    echo "No válido, vuelve a probar"
 done
 ```
 
 ---
 
-## 10. Funcions (ordres fetes per tu)
+## 10. Funciones (órdenes hechas por ti)
 
-Una funció és un **trosset de codi amb nom** que pots usar tantes vegades com vulgues.
+Una función es un **trocito de código con nombre** que puedes usar tantas veces como quieras.
 
 ```bash
-saludar() {              # 1. la CREES
+saludar() {              # 1. la CREAS
     echo "Hola $1"
 }
 
-saludar Jose             # 2. la USES
+saludar Jose             # 2. la USAS
 saludar Maria
 ```
-Ix:
+Sale:
 ```
 Hola Jose
 Hola Maria
 ```
-- Primer **es crea**, després **s'usa**.
-- Per a usar-la, **sense parèntesis**: `saludar Jose`.
-- Dins de la funció, `$1`, `$2`... són **el que li passes a la funció**.
+- Primero **se crea**, después **se usa**.
+- Para usarla, **sin paréntesis**: `saludar Jose`.
+- Dentro de la función, `$1`, `$2`... son **lo que le pasas a la función**.
 
-**Guardar el que torna una funció:**
+**Guardar lo que devuelve una función:**
 ```bash
 doble() {
     echo $(( $1 * 2 ))
 }
 
-resultat=$(doble 5)
-echo $resultat
+resultado=$(doble 5)
+echo $resultado
 ```
-Ix: `10`
+Sale: `10`
 
-**Funció + bucle** (molt habitual):
+**Función + bucle** (muy habitual):
 ```bash
-for nom in Jose Maria Pep; do
-    saludar $nom
+for nombre in Jose Maria Pepe; do
+    saludar $nombre
 done
 ```
 
 ---
 
-## 11. Llistes (arrays)
+## 11. Listas (arrays)
 
-Una variable que guarda **diversos valors**.
+Una variable que guarda **varios valores**.
 
 ```bash
-colors=(roig verd blau)
-echo ${colors[0]}       # roig  (es comença a comptar per 0!)
-echo ${colors[1]}       # verd
-echo ${colors[@]}       # roig verd blau  (tots)
-echo ${#colors[@]}      # 3  (quants n'hi ha)
+colores=(rojo verde azul)
+echo ${colores[0]}       # rojo  (¡se empieza a contar por 0!)
+echo ${colores[1]}       # verde
+echo ${colores[@]}       # rojo verde azul  (todos)
+echo ${#colores[@]}      # 3  (cuántos hay)
 ```
 
 ---
 
-## 12. Ordres útils
+## 12. Órdenes útiles
 
-| Ordre | Què fa | Exemple → Resultat |
+| Orden | Qué hace | Ejemplo → Resultado |
 |---|---|---|
-| `echo` | mostra un text | `echo hola` → `hola` |
-| `basename` | lleva la ruta, deixa el nom | `basename /home/jose/a.txt` → `a.txt` |
-| `grep` | busca línies que tenen una paraula | `grep ERROR fitxer.log` |
-| `grep -c` | **compta** quantes línies la tenen | `grep -c ERROR fitxer.log` → `2` |
-| `wc -l` | compta línies | `wc -l fitxer.txt` → `10` |
-| `sort` | ordena | `sort noms.txt` |
-| `find` | busca fitxers | `find ~ -name "*.txt"` |
-| `id` | diu si un usuari existix | `id root` |
-| `cut` | talla un tros de cada línia | `cut -d: -f1 /etc/passwd` → noms d'usuaris |
-| `date` | data i hora | `date` |
+| `echo` | muestra un texto | `echo hola` → `hola` |
+| `basename` | quita la ruta, deja el nombre | `basename /home/jose/a.txt` → `a.txt` |
+| `grep` | busca líneas que tienen una palabra | `grep ERROR fichero.log` |
+| `grep -c` | **cuenta** cuántas líneas la tienen | `grep -c ERROR fichero.log` → `2` |
+| `wc -l` | cuenta líneas | `wc -l fichero.txt` → `10` |
+| `sort` | ordena | `sort nombres.txt` |
+| `find` | busca ficheros | `find ~ -name "*.txt"` |
+| `id` | dice si un usuario existe | `id root` |
+| `cut` | corta un trozo de cada línea | `cut -d: -f1 /etc/passwd` → nombres de usuarios |
+| `date` | fecha y hora | `date` |
 
-### La tuberia `|`
-Passa el resultat d'una ordre a la següent:
+### La tubería `|`
+Pasa el resultado de una orden a la siguiente:
 ```bash
 ls | wc -l
 ```
-= "llista els fitxers **i després** compta quantes línies ix" → quants fitxers hi ha.
+= "lista los ficheros **y después** cuenta cuántas líneas salen" → cuántos ficheros hay.
 
 ---
 
-## 13. Quan no funciona
+## 13. Cuando no funciona
 
-- Executa'l així per a veure **pas a pas** què fa:
+- Ejecútalo así para ver **paso a paso** qué hace:
 ```bash
   bash -x script.sh
 ```
-- Posa un `echo` per a veure què val una variable:
+- Pon un `echo` para ver qué vale una variable:
 ```bash
-  echo "La variable val: $nom"
+  echo "La variable vale: $nombre"
 ```
-- Llig l'error: normalment et diu **la línia** on està el problema.
-- Revisa la taula d'**errors típics** (apartat 2).
+- Lee el error: normalmente te dice **la línea** donde está el problema.
+- Revisa la tabla de **errores típicos** (apartado 2).
