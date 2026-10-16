@@ -18,3 +18,16 @@
 #   Puedes sacarlo con ${linea%%:*}
 
 # Solución:
+
+re='bash$'
+total=0
+
+while read -r linea; do
+    if [[ $linea =~ $re ]]; then
+        echo "${linea%%:*}"
+        total=$(( total + 1 ))
+    fi
+done < /etc/passwd
+
+echo "----"
+echo "Usuarios con bash: $total"

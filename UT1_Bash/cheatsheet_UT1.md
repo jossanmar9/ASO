@@ -82,6 +82,24 @@ Sale: `Hola Jose y Maria`
 | `$0` | el nombre del script |
 | `$?` | si la última orden ha ido bien (`0`) o mal (otro número) |
 
+**Si no te pasan argumentos, avisar y salir:**
+```bash
+if [ $# -eq 0 ]; then
+    echo "Uso: $0 <puerto>"
+    exit 1
+fi
+```
+`exit 1` = **termina el script** aquí (con error).
+
+**Si no te pasan argumentos, usar uno por defecto:**
+```bash
+if [ $# -eq 0 ]; then
+    fichero=/etc/login.defs
+else
+    fichero=$1
+fi
+```
+
 ---
 
 ## 5. Preguntar al usuario
@@ -190,7 +208,17 @@ if [[ $n -ge 1 && $n -le 10 ]]; then echo "Entre 1 y 10"; fi
 - `||` = **o** (basta con una)
 - `!` = **no** (al revés)
 
-> `[[ ]]` (doble) es una versión mejorada de `[ ]` que permite usar `&&` y `||` dentro.
+### ¿`[ ]` o `[[ ]]`?
+
+Los dos sirven para hacer preguntas en un `if`. `[[ ]]` (doble) es la versión **mejorada**.
+
+**Regla fácil:**
+- `[ ]` → para preguntas sencillas: `[ $n -gt 5 ]`, `[ -f "$x" ]`.
+- `[[ ]]` → **obligatorio** cuando uses:
+  - `=~` (expresiones regulares)
+  - `&&` o `||` **dentro** de la pregunta
+
+Si dudas, usa `[[ ]]`: funciona en todos los casos.
 
 ### Comprobar si una orden funciona
 
@@ -273,6 +301,44 @@ until [ "$respuesta" = "si" ]; do
 done
 ```
 
+### Leer un fichero línea a línea ⭐
+```bash
+while read -r linea; do
+    echo "Línea: $linea"
+done < /etc/passwd
+```
+En cada vuelta, `linea` es **una línea entera** del fichero.
+
+**¿Qué hace el `<` del final?** "**Mete** este fichero dentro del bucle". Es como decirle: "lee de aquí". Sin él, `read` esperaría a que escribieras tú con el teclado.
+
+```
+done < /etc/passwd
+     ↑
+     "coge las líneas de este fichero"
+```
+
+**Quedarse con lo de antes del primer `:`**
+```bash
+linea="root:x:0:0:root:/root:/bin/bash"
+echo ${linea%%:*}
+```
+Sale: `root`
+
+**Cómo se lee `${linea%%:*}`:**
+
+| Trozo | Significa |
+|---|---|
+| `${linea ... }` | coge lo que hay en la variable `linea`... |
+| `%%` | ...y **borra por el final**... |
+| `:*` | ...desde **los dos puntos** (`:`) **hasta el final** (`*` = todo lo que venga) |
+
+```
+root:x:0:0:root:/root:/bin/bash
+    └──────── se borra ────────┘
+Queda: root
+```
+Truco: `%` borra por **detrás**.
+
 ### Salir o saltar
 | Escribe | Qué hace |
 |---|---|
@@ -347,7 +413,78 @@ echo ${#colores[@]}      # 3  (cuántos hay)
 
 ---
 
-## 12. Órdenes útiles
+## 12. Expresiones regulares (patrones de texto)
+
+Sirven para preguntar si un texto **tiene una forma concreta**: si son solo números, si acaba en `.conf`, si empieza por minúscula...
+
+```bash
+re='^[0-9][0-9]*$'
+if [[ $dato =~ $re ]]; then
+    echo "Es un número"
+else
+    echo "No es un número"
+fi
+```
+- El patrón se guarda en una **variable** (`re`).
+- Se compara con `=~` dentro de `[[ ]]`.
+- Después de `=~`, la variable va **sin comillas**.
+
+### Los símbolos
+
+| Símbolo | Significa | Ejemplo | Cumple | No cumple |
+|---|---|---|---|---|
+| `^` | **empieza** por | `^#` | `# comentario` | `hola #` |
+| `$` | **acaba** en | `bash$` | `/bin/bash` | `bash.txt` |
+| `.` | **cualquier** carácter | `^h.la$` | `hola`, `hxla` | `hla` |
+| `\.` | un **punto** de verdad | `\.conf$` | `a.conf` | `aXconf` |
+| `*` | lo de antes, **0 o más** veces | `^[0-9][0-9]*$` | `5`, `123` | `12a` |
+| `[ ]` | **uno** de estos caracteres | `[aeiou]` | `a`, `e`... | `b` |
+| `[^ ]` | un carácter que **NO** sea de estos | `^[^#]` | `MAIL_DIR` | `# nota` |
+
+Rangos dentro de `[ ]`: `[0-9]` = una cifra, `[a-z]` = una minúscula.
+
+### ⚠️ Cuidado: el `^` tiene DOS significados
+
+El mismo símbolo significa cosas distintas según **dónde** esté:
+
+| Dónde está | Significa | Ejemplo | Se lee |
+|---|---|---|---|
+| **Fuera** de `[ ]` (al principio) | **empieza por** | `^#` | "empieza por `#`" |
+| **Dentro** de `[ ]` (justo después de `[`) | **NO** | `[^#]` | "un carácter que **no** es `#`" |
+
+Cuando salen **los dos juntos**, léelos uno a uno, de izquierda a derecha:
+
+```
+^[^#]
+│ └─┴── un carácter que NO es #
+└────── empieza por...
+```
+= "**empieza por** un carácter que **no es** `#`".
+
+| Línea | ¿Cumple `^[^#]`? | Por qué |
+|---|---|---|
+| `MAIL_DIR /var/mail` | ✅ sí | empieza por `M`, que no es `#` |
+| `# comentario` | ❌ no | empieza por `#` |
+| *(línea vacía)* | ❌ no | no tiene ningún carácter para empezar |
+
+Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comentarios y las líneas vacías a la vez.
+
+> Para comprobar el texto **entero**, pon `^` al principio y `$` al final. Sin ellos, basta con que el patrón aparezca **en algún sitio**.
+
+### Patrones típicos
+
+| Patrón | Qué comprueba |
+|---|---|
+| `^[0-9][0-9]*$` | solo números |
+| `^[a-z][a-z0-9]*$` | empieza por minúscula y luego solo minúsculas o cifras |
+| `\.conf$` | acaba en `.conf` |
+| `~$` | acaba en `~` |
+| `^#` | es un comentario |
+| `^[^#]` | línea útil: no está vacía y no es un comentario |
+
+---
+
+## 13. Órdenes útiles
 
 | Orden | Qué hace | Ejemplo → Resultado |
 |---|---|---|
@@ -359,6 +496,7 @@ echo ${#colores[@]}      # 3  (cuántos hay)
 | `sort` | ordena | `sort nombres.txt` |
 | `find` | busca ficheros | `find ~ -name "*.txt"` |
 | `id` | dice si un usuario existe | `id root` |
+| `grep -q` | busca **sin mostrar nada**, solo para el `if` | `if grep -q "^root:" /etc/passwd; then` |
 | `cut` | corta un trozo de cada línea | `cut -d: -f1 /etc/passwd` → nombres de usuarios |
 | `date` | fecha y hora | `date` |
 
@@ -371,7 +509,7 @@ ls | wc -l
 
 ---
 
-## 13. Cuando no funciona
+## 14. Cuando no funciona
 
 - Ejecútalo así para ver **paso a paso** qué hace:
 ```bash
@@ -383,3 +521,7 @@ ls | wc -l
 ```
 - Lee el error: normalmente te dice **la línea** donde está el problema.
 - Revisa la tabla de **errores típicos** (apartado 2).
+- Para las expresiones regulares, pruébalas sueltas en la terminal:
+```bash
+  re='^[0-9][0-9]*$'; [[ 12a =~ $re ]] && echo "cumple" || echo "no cumple"
+```

@@ -13,3 +13,22 @@
 # $ ./puerto.sh 70000   → 70000 está fuera de rango (1-65535)
 
 # Solución:
+
+if [ $# -eq 0 ]; then
+    echo "Uso: $0 <puerto>"
+    exit 1
+fi
+
+re='^[0-9][0-9]*$'
+
+if [[ $1 =~ $re ]]; then
+    if [ "$1" -lt 1 ]; then
+        echo "$1 está fuera de rango (1-65535)"
+    elif [ "$1" -gt 65535 ]; then
+        echo "$1 está fuera de rango (1-65535)"
+    else
+        echo "$1 es un puerto válido"
+    fi
+else
+    echo "$1 no es un número"
+fi

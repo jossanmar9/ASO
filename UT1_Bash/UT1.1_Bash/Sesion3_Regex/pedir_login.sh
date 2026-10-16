@@ -24,3 +24,19 @@
 # Ayuda: para saber si existe: grep -q "^$login:" /etc/passwd
 
 # Solución:
+
+re='^[a-z][a-z0-9]*$'
+
+while true; do
+    read -p "Nombre de usuario: " login
+    if [[ $login =~ $re ]]; then
+        break
+    fi
+    echo "  No es válido. Debe empezar por minúscula y tener solo minúsculas o dígitos."
+done
+
+if grep -q "^$login:" /etc/passwd; then
+    echo "El usuario $login ya existe."
+else
+    echo "Para crearlo: sudo useradd -m -s /bin/bash $login"
+fi

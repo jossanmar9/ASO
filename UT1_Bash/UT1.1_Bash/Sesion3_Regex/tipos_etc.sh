@@ -21,3 +21,29 @@
 # Ayuda: for fichero in /etc/*; do ... done
 
 # Solución:
+
+re_conf='\.conf$'
+re_bak='\.bak$'
+re_tilde='~$'
+
+conf=0
+copias=0
+
+echo "Ficheros de configuración:"
+
+for fichero in /etc/*; do
+    if [ -f "$fichero" ]; then
+        if [[ $fichero =~ $re_conf ]]; then
+            echo "  $fichero"
+            conf=$(( conf + 1 ))
+        elif [[ $fichero =~ $re_bak ]]; then
+            copias=$(( copias + 1 ))
+        elif [[ $fichero =~ $re_tilde ]]; then
+            copias=$(( copias + 1 ))
+        fi
+    fi
+done
+
+echo "----"
+echo "Configuración: $conf"
+echo "Copias de seguridad: $copias"
