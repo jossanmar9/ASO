@@ -33,6 +33,8 @@ Sale: `Hola mundo`
 | `echo nombre` | `echo $nombre` | Para leer una variable, **con `$`** |
 | `[-z $1]` | `[ -z $1 ]` | Dentro de los `[ ]` **siempre espacios** |
 | `if [ ... ]` y ya | `if [ ... ]; then` | Después de la condición va **`then`** |
+| `[[ $x =~ "$re" ]]` | `[[ $x =~ $re ]]` | Con comillas, el patrón **deja de funcionar** como patrón |
+| `re='[0-9]+'` | `re='^[0-9]+$'` | Sin `^` y `$`, `12a` también "cumple" (basta con que tenga una cifra) |
 
 ---
 
@@ -89,7 +91,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 ```
-`exit 1` = **termina el script** aquí (con error).
+`exit 1` = **termina el script** aquí. El número dice cómo ha ido: `0` = todo bien, cualquier otro (normalmente `1`) = ha habido un error.
 
 **Si no te pasan argumentos, usar uno por defecto:**
 ```bash
@@ -100,6 +102,26 @@ else
 fi
 ```
 
+**Dos argumentos opcionales**, cada uno con su valor por defecto:
+```bash
+if [ $# -ge 1 ]; then       # ¿me han pasado AL MENOS 1?
+    destino=$1
+else
+    destino=/var/backups
+fi
+
+if [ $# -ge 2 ]; then       # ¿me han pasado AL MENOS 2?
+    maximo=$2
+else
+    maximo=7
+fi
+```
+| Ejecutas | `destino` | `maximo` |
+|---|---|---|
+| `./backup.sh` | `/var/backups` | `7` |
+| `./backup.sh ~/copias` | `~/copias` | `7` |
+| `./backup.sh ~/copias 2` | `~/copias` | `2` |
+
 ---
 
 ## 5. Preguntar al usuario
@@ -108,7 +130,7 @@ fi
 read -p "¿Cómo te llamas? " nombre
 echo "Hola $nombre"
 ```
-El script **se espera** a que escribas algo y lo guarda en `nombre`.
+El script **se espera** a que escribas algo y lo guarda en `nombre`. La opción `-p` sirve para mostrar la pregunta en la misma línea.
 
 > Si el enunciado dice "**como argumento**", usa `$1`, **no** `read`.
 
@@ -253,7 +275,7 @@ esac
 
 ### `for`: para cada elemento de una lista
 ```bash
-for fruta in manzana pera plátano; do
+for fruta in manzana pera naranja; do
     echo "Me gusta la $fruta"
 done
 ```
@@ -261,7 +283,7 @@ Sale:
 ```
 Me gusta la manzana
 Me gusta la pera
-Me gusta la plátano
+Me gusta la naranja
 ```
 En cada vuelta, `fruta` coge el **siguiente** valor.
 
@@ -281,6 +303,7 @@ for (( i=1; i<=5; i++ )); do
 done
 ```
 Sale: `Vuelta 1`, `Vuelta 2`... hasta `Vuelta 5`.
+(`i++` = súmale 1 a `i` en cada vuelta.)
 
 ### `while`: mientras se cumpla
 ```bash
@@ -338,6 +361,23 @@ root:x:0:0:root:/root:/bin/bash
 Queda: root
 ```
 Truco: `%` borra por **detrás**.
+
+### Leer y separar los campos a la vez: `IFS` ⭐
+Si necesitas **varios trozos** de cada línea, es mejor que `${linea%%:*}`:
+```bash
+while IFS=':' read -r usuario x uid gid desc home shell; do
+    echo "$usuario tiene UID $uid y shell $shell"
+done < /etc/passwd
+```
+`IFS=':'` = "corta la línea por cada `:`". `read` guarda **cada trozo en una variable, por orden**:
+```
+alumno : x : 1000 : 1000 : Alumno : /home/alumno : /bin/bash
+   ↓     ↓    ↓      ↓       ↓          ↓             ↓
+usuario  x   uid    gid    desc       home          shell
+```
+- Hay que poner variables para **todos** los trozos hasta el último que quieras, aunque no los uses (`x`, `gid`, `desc`). Si no, se descoloca todo.
+- Con otro separador funciona igual: `IFS=','` para un fichero CSV.
+- `-r` hace que `read` lea las `\` tal cual. Ponlo siempre.
 
 ### Salir o saltar
 | Escribe | Qué hace |
@@ -397,6 +437,35 @@ for nombre in Jose Maria Pepe; do
 done
 ```
 
+**Función para los errores** ⭐ (muestra el mensaje y **termina**):
+```bash
+error() {
+    echo "Error: $1"
+    echo "Uso: $0 alta | baja identificador"
+    exit 1
+}
+
+if [ $# -eq 0 ]; then
+    error "falta la acción"
+fi
+```
+Así no repites las tres líneas en cada error: solo escribes `error "mensaje"`.
+
+**Función que responde sí o no** (para usarla en un `if`):
+```bash
+existe() {
+    grep -q "^$1:" /etc/passwd
+}
+
+if existe "root"; then
+    echo "root existe"
+fi
+if ! existe "pepito"; then
+    echo "pepito no existe"
+fi
+```
+La función "responde" lo mismo que su **última orden**: si `grep -q` encuentra algo, es **sí**; si no, es **no**.
+
 ---
 
 ## 11. Listas (arrays)
@@ -429,6 +498,14 @@ fi
 - Se compara con `=~` dentro de `[[ ]]`.
 - Después de `=~`, la variable va **sin comillas**.
 
+**Si NO cumple** → pon `!` delante:
+```bash
+if [[ ! $dato =~ $re ]]; then
+    echo "Error: $dato no es un número"
+    exit 1
+fi
+```
+
 ### Los símbolos
 
 | Símbolo | Significa | Ejemplo | Cumple | No cumple |
@@ -441,7 +518,18 @@ fi
 | `[ ]` | **uno** de estos caracteres | `[aeiou]` | `a`, `e`... | `b` |
 | `[^ ]` | un carácter que **NO** sea de estos | `^[^#]` | `MAIL_DIR` | `# nota` |
 
-Rangos dentro de `[ ]`: `[0-9]` = una cifra, `[a-z]` = una minúscula.
+Rangos dentro de `[ ]`: `[0-9]` = una cifra, `[a-z]` = una minúscula, `[A-Za-z]` = cualquier letra.
+
+### Símbolos extendidos
+
+| Símbolo | Significa | Ejemplo | Cumple | No cumple |
+|---|---|---|---|---|
+| `+` | lo de antes, **1 o más** veces | `^[0-9]+$` | `5`, `123` | *(vacío)*, `12a` |
+| `{n}` | lo de antes, **exactamente n** veces | `^[0-9]{4}$` | `2026` | `26`, `20261` |
+| `( )` | **agrupa** un trozo (para repetirlo entero) | `^(ab)+$` | `ab`, `abab` | `aba` |
+
+> `*` = **0** o más (puede no haber ninguno). `+` = **1** o más (tiene que haber al menos uno).
+> Por eso `^[0-9][0-9]*$` y `^[0-9]+$` comprueban lo mismo: "solo cifras".
 
 ### ⚠️ Cuidado: el `^` tiene DOS significados
 
@@ -481,6 +569,23 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 | `~$` | acaba en `~` |
 | `^#` | es un comentario |
 | `^[^#]` | línea útil: no está vacía y no es un comentario |
+| `^[0-9]+$` | solo números (versión extendida) |
+| `^[A-Za-z]+$` | una sola palabra, solo letras |
+| `^[A-Za-z]+ [A-Za-z]+$` | dos palabras separadas por un espacio |
+| `^(/[a-z]+)+$` | ruta absoluta: `/bin/bash`, `/usr/bin/zsh` |
+| `^etc-[0-9]{8}-[0-9]{6}\.tar\.gz$` | nombre tipo `etc-20261014-211317.tar.gz` |
+| `^alu[a-z]{5}$` | `alu` + exactamente 5 minúsculas: `alulufem` |
+
+**Cómo se lee `^(/[a-z]+)+$`:**
+```
+^  ( /[a-z]+ )  +  $
+│    │  │       │  └─ final
+│    │  │       └──── el grupo, 1 o más veces
+│    │  └──────────── una o más minúsculas
+│    └─────────────── una barra
+└──────────────────── principio
+```
+= "uno o más trozos del tipo `/palabra`". `/bin/bash` ✅ (`/bin` + `/bash`) · `bash` ❌ (no empieza por `/`).
 
 ---
 
@@ -497,8 +602,31 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 | `find` | busca ficheros | `find ~ -name "*.txt"` |
 | `id` | dice si un usuario existe | `id root` |
 | `grep -q` | busca **sin mostrar nada**, solo para el `if` | `if grep -q "^root:" /etc/passwd; then` |
-| `cut` | corta un trozo de cada línea | `cut -d: -f1 /etc/passwd` → nombres de usuarios |
+| `cut -d: -f1` | corta por `:` y se queda con el **1.er** trozo | `cut -d: -f1 /etc/passwd` → nombres de usuarios |
+| `cut -d' ' -f2` | corta por espacios y se queda con la **2.ª** palabra | `echo "Ferrer Mas" \| cut -d' ' -f2` → `Mas` |
+| `cut -c1-2` | se queda con los **caracteres** 1 a 2 | `echo "Lucia" \| cut -c1-2` → `Lu` |
+| `tr 'A-Z' 'a-z'` | pasa a **minúsculas** | `echo "LuFeM" \| tr 'A-Z' 'a-z'` → `lufem` |
 | `date` | fecha y hora | `date` |
+| `date +%Y%m%d-%H%M%S` | fecha para nombres de fichero | → `20261014-211317` |
+| `date +%H:%M:%S` | solo la hora | → `21:13:18` |
+| `tar -czf copia.tar.gz -C / etc` | comprime la carpeta `/etc` | `c` = crear, `z` = comprimir, `f` = nombre del fichero |
+| `logger -t etiqueta "mensaje"` | guarda un mensaje en el **registro del sistema** | `logger -t aso-backup "Copia creada"` |
+| `journalctl -t etiqueta` | muestra los mensajes con esa etiqueta | `journalctl -t aso-backup` |
+
+### `sed`: buscar y cambiar texto
+```bash
+sed 's/hola/adios/' fichero.txt      # cambia el PRIMER "hola" de cada línea
+sed 's/hola/adios/g' fichero.txt     # cambia TODOS (g = global)
+sed '/^#/d' fichero.txt              # borra las líneas que empiezan por #
+```
+- `s/viejo/nuevo/` = **s**ustituye.
+- `/patrón/d` = **d**elete: borra las líneas que cumplen el patrón (usa las mismas regex).
+- `sed` **muestra** el resultado, pero **no cambia** el fichero.
+
+```bash
+echo "hola mundo hola" | sed 's/hola/adios/g'
+```
+Sale: `adios mundo adios`
 
 ### La tubería `|`
 Pasa el resultado de una orden a la siguiente:
@@ -512,16 +640,19 @@ ls | wc -l
 ## 14. Cuando no funciona
 
 - Ejecútalo así para ver **paso a paso** qué hace:
-```bash
+  ```bash
   bash -x script.sh
-```
+  ```
 - Pon un `echo` para ver qué vale una variable:
-```bash
+  ```bash
   echo "La variable vale: $nombre"
-```
+  ```
 - Lee el error: normalmente te dice **la línea** donde está el problema.
 - Revisa la tabla de **errores típicos** (apartado 2).
-- Para las expresiones regulares, pruébalas sueltas en la terminal:
-```bash
-  re='^[0-9][0-9]*$'; [[ 12a =~ $re ]] && echo "cumple" || echo "no cumple"
-```
+- Para las expresiones regulares, pruébalas sueltas en la terminal antes de meterlas en el script:
+  ```bash
+  re='^[0-9]+$'
+  if [[ 12a =~ $re ]]; then echo "cumple"; else echo "no cumple"; fi
+  ```
+  Sale: `no cumple`
+- Si el editor subraya algo (ShellCheck), léelo: a veces es un error y a veces solo un consejo (por ejemplo, "variable no usada" en `x`, `gid`, `desc`).
