@@ -101,6 +101,6 @@ Feia dos anys que havia cursat el mòdul d'Implantació de Sistemes Operatius i,
 
 Aquesta unitat m'ha servit per refrescar aquests coneixements i tornar a practicar la creació de scripts. Els primers exercicis m'han resultat més familiars, mentre que en els exercicis amb condicionals, bucles, funcions i expressions regulars he necessitat consultar i repassar més conceptes.
 
-Durant la unitat he utilitzat una eina d'intel·ligència artificial com a suport i tutor. En els exercicis bàsics i en la primera sessió l'he utilitzada principalment per demanar explicacions, entendre el funcionament d'algunes ordres i obtindre pistes quan m'he quedat encallat, intentant resoldre els exercicis pel meu compte. En les sessions de funcions, expressions regulars i repàs, en canvi, m'ha proporcionat bona part de les solucions, que després he revisat amb les seues explicacions per entendre com funcionen.
+Durant la unitat he utilitzat una eina d'intel·ligència artificial com a suport i tutor. En els exercicis bàsics i en la primera sessió l'he utilitzada principalment per demanar explicacions, entendre el funcionament d'algunes ordres i obtindre pistes quan m'he quedat encallat, intentant resoldre els exercicis pel meu compte.
 
 Els conceptes que més em costen són els bucles i les expressions regulars, així que els continuaré practicant amb exercicis semblants per a poder resoldre'ls pel meu compte.
