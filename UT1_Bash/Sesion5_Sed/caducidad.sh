@@ -19,3 +19,27 @@
 
 # Solución:
 
+fichero=~/lab-sed/login.defs
+
+if [ $# -eq 0 ]; then
+    echo "Uso: $0 <días>"
+    exit 1
+fi
+
+re_dias='^[0-9]{1,3}$'
+if [[ ! $1 =~ $re_dias ]]; then
+    echo "Error: $1 no es un número de días válido"
+    exit 1
+fi
+
+if [ ! -f "$fichero" ]; then
+    echo "Error: el fichero $fichero no existe"
+    exit 1
+fi
+
+antes=$(grep "^PASS_MAX_DAYS" "$fichero")
+sed -i.bak "s/^PASS_MAX_DAYS.*/PASS_MAX_DAYS $1/" "$fichero"
+despues=$(grep "^PASS_MAX_DAYS" "$fichero")
+
+echo "Antes:   $antes"
+echo "Después: $despues"

@@ -35,6 +35,8 @@ Sale: `Hola mundo`
 | `if [ ... ]` y ya | `if [ ... ]; then` | Después de la condición va **`then`** |
 | `[[ $x =~ "$re" ]]` | `[[ $x =~ $re ]]` | Con comillas, el patrón **deja de funcionar** como patrón |
 | `re='[0-9]+'` | `re='^[0-9]+$'` | Sin `^` y `$`, `12a` también "cumple" (basta con que tenga una cifra) |
+| `[16-31]` | `(1[6-9]\|2[0-9]\|3[01])` | Dentro de `[ ]` cada carácter va **solo**: `[16-31]` no es "del 16 al 31" |
+| `sed 's/A/$1/'` | `sed "s/A/$1/"` | Con comillas **simples**, `$1` no se cambia por su valor |
 
 ---
 
@@ -518,18 +520,36 @@ fi
 | `[ ]` | **uno** de estos caracteres | `[aeiou]` | `a`, `e`... | `b` |
 | `[^ ]` | un carácter que **NO** sea de estos | `^[^#]` | `MAIL_DIR` | `# nota` |
 
-Rangos dentro de `[ ]`: `[0-9]` = una cifra, `[a-z]` = una minúscula, `[A-Za-z]` = cualquier letra.
+Rangos dentro de `[ ]`: `[0-9]` = una cifra, `[a-z]` = una minúscula, `[A-Za-z]` = cualquier letra, `[0-9a-fA-F]` = un carácter hexadecimal (cifra o letra de la a a la f).
+
+Dentro de `[ ]`, el `.` es un punto normal y el `-` puesto **al final** es un guion normal: `[a-z0-9._-]` = minúscula, cifra, punto, guion bajo o guion.
 
 ### Símbolos extendidos
 
 | Símbolo | Significa | Ejemplo | Cumple | No cumple |
 |---|---|---|---|---|
 | `+` | lo de antes, **1 o más** veces | `^[0-9]+$` | `5`, `123` | *(vacío)*, `12a` |
+| `?` | lo de antes, **0 o 1** vez (es **opcional**) | `^https?://` | `http://`, `https://` | `ftp://` |
 | `{n}` | lo de antes, **exactamente n** veces | `^[0-9]{4}$` | `2026` | `26`, `20261` |
-| `( )` | **agrupa** un trozo (para repetirlo entero) | `^(ab)+$` | `ab`, `abab` | `aba` |
+| `{n,m}` | lo de antes, **entre n y m** veces | `^[0-9]{1,3}$` | `5`, `90`, `255` | `1000` |
+| `a\|b` | **a o b** | `^(gmail\|hotmail)$` | `gmail`, `hotmail` | `yahoo` |
+| `( )` | **agrupa** un trozo (para repetirlo o para el `\|`) | `^(ab)+$` | `ab`, `abab` | `aba` |
 
 > `*` = **0** o más (puede no haber ninguno). `+` = **1** o más (tiene que haber al menos uno).
 > Por eso `^[0-9][0-9]*$` y `^[0-9]+$` comprueban lo mismo: "solo cifras".
+
+### "Es" o "contiene": con o sin `^` y `$`
+
+| Patrón | Pregunta | `Hola123` |
+|---|---|---|
+| `^[0-9]+$` | ¿**es** todo cifras? | ❌ |
+| `[0-9]` | ¿**contiene** alguna cifra? | ✅ |
+| `[A-Z]` | ¿**contiene** alguna mayúscula? | ✅ |
+| `[^A-Za-z0-9]` | ¿**contiene** algún símbolo? | ❌ |
+| `.{12}` | ¿**contiene** 12 caracteres seguidos? (= tiene 12 o más) | ❌ |
+
+- **Con** `^` y `$` → compruebas el texto **entero** (validar formatos: IP, MAC, correo...).
+- **Sin** `^` y `$` → compruebas si algo aparece **en algún sitio** (contraseñas, buscar una IP dentro de una línea...).
 
 ### ⚠️ Cuidado: el `^` tiene DOS significados
 
@@ -575,6 +595,12 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 | `^(/[a-z]+)+$` | ruta absoluta: `/bin/bash`, `/usr/bin/zsh` |
 | `^etc-[0-9]{8}-[0-9]{6}\.tar\.gz$` | nombre tipo `etc-20261014-211317.tar.gz` |
 | `^alu[a-z]{5}$` | `alu` + exactamente 5 minúsculas: `alulufem` |
+| `^[0-9]{1,3}$` | un número de 1 a 3 cifras |
+| `^([0-9]{1,3}\.){3}[0-9]{1,3}$` | formato de IP: `192.168.10.1` |
+| `^([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}$` | MAC: `08:00:27:3a:1f:01` o `08-00-27-3A-1F-02` |
+| `^[a-z0-9._-]+@(alu\.)?edu\.gva\.es$` | correo `@edu.gva.es` o `@alu.edu.gva.es` |
+| `^(10\.\|192\.168\.\|172\.(1[6-9]\|2[0-9]\|3[01])\.)` | IP privada |
+| `^127\.` | IP loopback |
 
 **Cómo se lee `^(/[a-z]+)+$`:**
 ```
@@ -586,6 +612,25 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 └──────────────────── principio
 ```
 = "uno o más trozos del tipo `/palabra`". `/bin/bash` ✅ (`/bin` + `/bash`) · `bash` ❌ (no empieza por `/`).
+
+**Cómo se leen la IP y la MAC** (tienen la misma forma):
+```
+IP:   ^( [0-9]{1,3}     \.   ){3}  [0-9]{1,3}     $
+MAC:  ^( [0-9a-fA-F]{2} [:-] ){5}  [0-9a-fA-F]{2} $
+       └─ un trozo ─┘ └separador┘   └─ el último trozo, sin separador
+```
+- IP = "1 a 3 cifras + punto", **3 veces**, y otro número al final.
+- MAC = "2 hexadecimales + `:` o `-`", **5 veces**, y otro par al final.
+- ⚠️ `999.999.999.999` cumple el formato, pero **no** es una IP válida (cada número va de 0 a 255). La regex solo mira el formato.
+
+**Cómo se lee `(alu\.)?`:** "puede haber `alu.` o no". Así una sola regex sirve para `@edu.gva.es` y `@alu.edu.gva.es`.
+
+**Cómo se lee el rango 172.16 – 172.31:**
+```
+172\.( 1[6-9] | 2[0-9] | 3[01] )\.
+       16-19    20-29    30-31
+```
+El `\.` del final es importante: sin él, `172.160.0.1` también cumpliría.
 
 ---
 
@@ -602,6 +647,9 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 | `find` | busca ficheros | `find ~ -name "*.txt"` |
 | `id` | dice si un usuario existe | `id root` |
 | `grep -q` | busca **sin mostrar nada**, solo para el `if` | `if grep -q "^root:" /etc/passwd; then` |
+| `grep -i` | no distingue mayúsculas de minúsculas | `grep -i "casa"` encuentra `Casa`, `CASA`... |
+| `grep "^palabra$"` | busca la **línea entera** (no un trozo) | `grep -q -i "^$password$" /usr/share/dict/spanish` |
+| `grep "^CLAVE"` | busca la línea que **empieza** por esa clave | `grep "^PASS_MAX_DAYS" login.defs` |
 | `cut -d: -f1` | corta por `:` y se queda con el **1.er** trozo | `cut -d: -f1 /etc/passwd` → nombres de usuarios |
 | `cut -d' ' -f2` | corta por espacios y se queda con la **2.ª** palabra | `echo "Ferrer Mas" \| cut -d' ' -f2` → `Mas` |
 | `cut -c1-2` | se queda con los **caracteres** 1 a 2 | `echo "Lucia" \| cut -c1-2` → `Lu` |
@@ -614,19 +662,64 @@ Por eso `^[^#]` sirve para quedarse con las **líneas útiles**: quita los comen
 | `journalctl -t etiqueta` | muestra los mensajes con esa etiqueta | `journalctl -t aso-backup` |
 
 ### `sed`: buscar y cambiar texto
+
+`sed` lee un fichero línea a línea y hace cambios. Por defecto **muestra** el resultado pero **no cambia** el fichero.
+
+**Sustituir: `s/viejo/nuevo/`**
 ```bash
 sed 's/hola/adios/' fichero.txt      # cambia el PRIMER "hola" de cada línea
 sed 's/hola/adios/g' fichero.txt     # cambia TODOS (g = global)
-sed '/^#/d' fichero.txt              # borra las líneas que empiezan por #
 ```
-- `s/viejo/nuevo/` = **s**ustituye.
-- `/patrón/d` = **d**elete: borra las líneas que cumplen el patrón (usa las mismas regex).
-- `sed` **muestra** el resultado, pero **no cambia** el fichero.
-
 ```bash
 echo "hola mundo hola" | sed 's/hola/adios/g'
 ```
 Sale: `adios mundo adios`
+
+**Borrar líneas: `/patrón/d`**
+```bash
+sed '/^#/d' fichero.txt              # borra las líneas que empiezan por #
+sed '/^$/d' fichero.txt              # borra las líneas vacías
+```
+
+**Mostrar solo algunas líneas: `-n` + `p`**
+```bash
+sed -n '5p' fichero.txt              # solo la línea 5
+sed -n '3,7p' fichero.txt            # de la 3 a la 7
+sed -n '/^[^#]/p' fichero.txt        # solo las líneas útiles (sin comentarios ni vacías)
+```
+`-n` = "no muestres nada tú solo"; `p` = "muestra esta". El último es el truco para **quitar comentarios y líneas vacías con un solo sed**: en lugar de borrar las malas, muestra solo las buenas (`^[^#]`).
+
+**Regex extendidas: `sed -E`** (igual que `grep -E`)
+```bash
+sed -E 's/@(gmail|hotmail)\.com$/@alu.edu.gva.es/' correos.txt
+sed -E 's/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/X.X.X.X/g' accesos.log
+```
+Sin `-E`, el `|`, los `( )`, el `+`, el `?` y las `{ }` **no** funcionan como en la tabla de regex extendidas.
+
+**Guardar el resultado en otro fichero** (el original no se toca):
+```bash
+sed -E 's/.../.../g' accesos.log > accesos.log.anonimo
+```
+
+**Cambiar el fichero de verdad: `-i`**
+```bash
+sed -i 's/viejo/nuevo/g' fichero.txt        # lo modifica directamente
+sed -i.bak 's/viejo/nuevo/g' fichero.txt    # lo modifica y guarda el original en fichero.txt.bak
+```
+⚠️ Con `-i` no hay vuelta atrás. Usa `-i.bak` o trabaja sobre una copia.
+
+**Cambiar una línea entera que empieza por una clave** (ficheros de configuración):
+```bash
+sed -i.bak "s/^PASS_MAX_DAYS.*/PASS_MAX_DAYS $1/" login.defs
+```
+= "la línea que empieza por `PASS_MAX_DAYS` y todo lo que sigue (`.*`), cámbiala por `PASS_MAX_DAYS 90`".
+⚠️ Va con comillas **dobles** porque dentro hay una variable (`$1`). Con comillas simples escribiría literalmente `$1`.
+
+| Quiero... | Orden |
+|---|---|
+| ver el fichero cambiado | `sed 's/a/b/g' fichero` |
+| guardarlo en otro fichero | `sed 's/a/b/g' fichero > nuevo` |
+| cambiar el fichero (con copia) | `sed -i.bak 's/a/b/g' fichero` |
 
 ### La tubería `|`
 Pasa el resultado de una orden a la siguiente:
