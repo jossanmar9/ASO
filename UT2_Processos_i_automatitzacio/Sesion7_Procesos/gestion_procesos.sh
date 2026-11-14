@@ -72,3 +72,144 @@
 
 # Solución:
 
+listar_usuario() {
+    read -p "Escribe el nombre de usuario: " usuario
+    if ! id "$usuario" &>/dev/null; then
+        echo "El usuario no existe"
+        return 1
+    else 
+        ps -u "$usuario"
+    fi
+}
+
+buscar_proceso() {
+    read -p "Escribe el nombre del proceso: " proceso
+    if ! ps -C "$proceso" &>/dev/null; then
+        echo "No hay ningún proceso que coincida con $proceso"
+    else
+        ps -C "$proceso" -o pid,user,%cpu,comm
+    fi
+}
+
+top_cpu() {
+    if [ -z "$1" ]; then
+        numero=5
+    else
+        numero="$1"
+    fi
+    ps -eo pid,user,%cpu,comm --sort=-%cpu | head -n $(( numero + 1 ))
+}
+
+validar_pid() {
+    re='^[0-9]+$'
+    if [[ ! $1 =~ $re ]]; then
+        return 1
+    fi
+    if ! ps -p "$1" &>/dev/null; then
+        return 1
+    fi
+    return 0
+}
+
+registrar() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1 - $2 - $3" >> ~/gestion_procesos.log
+}
+
+cambiar_prioridad() {
+    # 1. Demanar el PID i validar-lo
+    read -p "Escribe el PID: " pid
+    if ! validar_pid "$pid"; then
+        echo "Error: el PID $pid no es válido o no existe"
+        return 1
+    fi
+
+    # 2. Demanar el nou valor i comprovar que és un número (pot ser negatiu)
+    read -p "Escribe la prioridad: " prioridad
+    re_nice='^-?[0-9]+$'
+    if [[ ! $prioridad =~ $re_nice ]]; then
+        echo "Error: $prioridad no es un número"
+        return 1
+    fi
+
+     # 3. Comprovar el rang: root de -20 a 19, usuari normal de 0 a 19
+    if [[ $EUID -eq 0 ]]; then
+        minimo=-20
+    else
+        minimo=0
+    fi
+    if [ "$prioridad" -lt "$minimo" ] || [ "$prioridad" -gt 19 ]; then
+        echo "Error: el valor debe estar entre $minimo y 19"
+        return 1
+    fi
+
+    # 4. aplicar el canvi
+    comando=$(ps -p "$pid" -o comm=)
+    if renice -n "$prioridad" -p "$pid" &>/dev/null; then
+        echo "Prioridad de $pid ($comando) cambiada a $prioridad"
+        registrar "renice $prioridad" "$pid" "$comando"
+    else
+        echo "Error: no se ha podido cambiar la prioridad de $pid"
+    fi
+}
+
+finalizar_proceso() {
+    # 1. Demanar el PID i validar-lo
+    read -p "Escribe el PID: " pid
+    if ! validar_pid "$pid"; then
+        echo "Error: el PID $pid no es válido o no existe"
+        return 1
+    fi
+
+    # 2. Saber com es diu el procés
+    comando=$(ps -p "$pid" -o comm=)
+
+    # 3. Demanar confirmació
+    read -p "¿Finalizar $pid ($comando)? (s/n): " respuesta
+    if [ "$respuesta" != "s" ]; then
+        echo "Operación cancelada"
+        return 0
+    fi
+
+    # 4. Enviar SIGTERM (si falla, és que no tenim permís)
+    if ! kill -SIGTERM "$pid" &>/dev/null; then
+        echo "Error: no tienes permiso para finalizar el proceso $pid"
+        return 1
+    fi
+
+    # 5. Esperar 3 segons i mirar si encara està viu
+    sleep 3
+    if ps -p "$pid" &>/dev/null; then
+        kill -SIGKILL "$pid"
+        echo "Proceso $pid finalizado con SIGKILL"
+        registrar "SIGKILL" "$pid" "$comando"
+    else
+        echo "Proceso $pid finalizado con SIGTERM"
+        registrar "SIGTERM" "$pid" "$comando"
+    fi
+}
+
+opcion=0
+while [ "$opcion" != 6 ]; do
+
+    echo ""
+    echo "===== GESTIÓN DE PROCESOS ====="
+    echo "1) Listar los procesos de un usuario"
+    echo "2) Buscar un proceso por nombre"
+    echo "3) Mostrar los N procesos que más CPU consumen"
+    echo "4) Cambiar la prioridad de un proceso"
+    echo "5) Finalizar un proceso"
+    echo "6) Salir"
+    read -p "Opción: " opcion
+
+    case "$opcion" in
+        1) listar_usuario ;;
+        2) buscar_proceso ;;
+        3) read -p "Cuantos procesos quieres listar: "  num
+        top_cpu "$num" ;;
+        4) cambiar_prioridad ;;
+        5) finalizar_proceso ;;
+        6) echo "Finalizamos el programa"
+            exit 0;;
+        *) echo "Opción no contemplada" ;;
+    esac
+done
