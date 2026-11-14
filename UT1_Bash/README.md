@@ -99,8 +99,8 @@ Chuleta de consulta de la unitat: [`cheatsheet_UT1.md`](cheatsheet_UT1.md)
 
 Feia dos anys que havia cursat el mòdul d'Implantació de Sistemes Operatius i, per tant, encara recordava alguns dels conceptes bàsics de Bash, però havia oblidat part de la sintaxi i algunes de les ordres.
 
-Aquesta unitat m'ha servit per refrescar aquests coneixements i tornar a practicar la creació de scripts. Els primers exercicis m'han resultat més familiars, mentre que en els exercicis amb condicionals, bucles, funcions i expressions regulars he necessitat consultar i repassar més conceptes.
+Aquesta unitat m'ha servit per refrescar aquests coneixements i tornar a practicar la creació de scripts. Els primers exercicis m'han resultat més familiars, però a mesura que la unitat avançava (condicionals, bucles, funcions, expressions regulars i sed) m'ha costat més, perquè encara no estic acostumat a treballar amb Bash i he necessitat consultar i repassar molts conceptes.
 
-Durant la unitat he utilitzat una eina d'intel·ligència artificial com a suport i tutor. En els exercicis bàsics i en la primera sessió l'he utilitzada principalment per demanar explicacions, entendre el funcionament d'algunes ordres i obtindre pistes quan m'he quedat encallat, intentant resoldre els exercicis pel meu compte.
+Durant la unitat he utilitzat una eina d'intel·ligència artificial com a suport i tutor: per a demanar explicacions, entendre el funcionament de les ordres, obtindre pistes quan m'he quedat encallat i, en les sessions més complicades, també exemples resolts que he estudiat per entendre com funcionen.
 
-Els conceptes que més em costen són els bucles i les expressions regulars, així que els continuaré practicant amb exercicis semblants per a poder resoldre'ls pel meu compte.
+Amb els apunts, la web de l'assignatura i el suport de la IA els exercicis són prou més fàcils que a l'examen. Per això, els conceptes que més em costen, els continuaré practicant amb exercicis semblants per a poder resoldre'ls pel meu compte.
