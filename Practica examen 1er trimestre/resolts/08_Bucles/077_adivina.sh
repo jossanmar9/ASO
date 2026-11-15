@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# Ejercicio 077 · 077_adivina.sh — Adivina el número
+# Bloque 8: Bucles · Dificultad: ★★★★☆
+#
+# El número secreto es 42. Pide números hasta que el usuario acierte.
+# Después de cada intento di si el secreto es mayor o menor. Al final
+# muestra cuántos intentos ha necesitado.
+#
+# Ejemplo:
+#   $ ./077_adivina.sh
+#   Número: 50
+#   Es menor
+#   Número: 40
+#   Es mayor
+#   Número: 42
+#   ¡Acertaste en 3 intentos!
+#
+# Pista: Chuleta, apartados 7 y 8.
+
+# Solución:
+
+secreto=42
+intentos=0
+n=0
+while [[ $n -ne $secreto ]]; do
+    read -p "Número: " n
+    ((intentos++))
+    if [[ $n -gt $secreto ]]; then
+        echo "Es menor"
+    elif [[ $n -lt $secreto ]]; then
+        echo "Es mayor"
+    fi
+done
+echo "¡Acertaste en $intentos intentos!"

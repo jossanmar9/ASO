@@ -1,0 +1,4 @@
+Hola {NOMBRE},
+tu usuario en el centro es {USUARIO}.
+Fecha de alta: {FECHA}.
+Un saludo, el equipo de {NOMBRE_CENTRO}.
