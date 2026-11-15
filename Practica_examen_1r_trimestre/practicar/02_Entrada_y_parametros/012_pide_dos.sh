@@ -15,3 +15,7 @@
 
 # Solución:
 
+read -p "¿Como te llamas?: " nombre
+read -p "¿Cuántos años tienes?: " edad
+
+echo "Mi nombre es $nombre y tengo $edad años de edad"

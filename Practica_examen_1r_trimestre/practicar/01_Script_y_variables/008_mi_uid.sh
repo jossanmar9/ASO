@@ -15,3 +15,6 @@
 
 # Solución:
 
+echo "Mi UID es $UID"
+echo "Mi PID es $PPID"
+

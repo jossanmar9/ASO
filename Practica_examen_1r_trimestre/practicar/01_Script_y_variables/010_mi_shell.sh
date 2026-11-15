@@ -14,3 +14,7 @@
 
 # Solución:
 
+echo "La shell que estoy usando es $SHELL"
+
+echo "las rutas d elos programas estan en $PATH"
+

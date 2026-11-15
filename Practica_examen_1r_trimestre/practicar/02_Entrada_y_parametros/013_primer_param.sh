@@ -13,3 +13,4 @@
 
 # Solución:
 
+echo "El primer parámetro es $1"

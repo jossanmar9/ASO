@@ -13,3 +13,7 @@
 
 # Solución:
 
+nombre=Jose
+ciudad=Massalfassar
+
+echo "$nombre vive en $ciudad"

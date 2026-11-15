@@ -16,3 +16,7 @@
 
 # Solución:
 
+precio=10
+
+echo "El precio es $precio"
+echo 'El precio es $precio'

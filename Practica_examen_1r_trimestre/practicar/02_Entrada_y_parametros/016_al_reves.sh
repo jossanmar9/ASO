@@ -13,3 +13,4 @@
 
 # Solución:
 
+echo "Los 3 parametros en orden inverso son: $3, $2 y $1"

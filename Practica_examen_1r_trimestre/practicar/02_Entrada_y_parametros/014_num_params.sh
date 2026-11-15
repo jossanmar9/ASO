@@ -14,3 +14,5 @@
 
 # Solución:
 
+echo "El nombre del script es $0"
+echo "El numero de parametros recibidos es $#"

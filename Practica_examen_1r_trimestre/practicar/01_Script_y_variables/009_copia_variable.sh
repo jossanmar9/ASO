@@ -15,3 +15,10 @@
 
 # Solución:
 
+a=primero
+b=$a
+a=segundo
+
+echo "La variable a $a"
+echo "La variable b $b"
+

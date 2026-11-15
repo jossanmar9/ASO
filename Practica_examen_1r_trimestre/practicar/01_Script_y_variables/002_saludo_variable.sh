@@ -13,3 +13,6 @@
 
 # Solución:
 
+nombre=Jose
+
+echo "Hola $nombre"

@@ -15,3 +15,7 @@
 
 # Solución:
 
+id root &>/dev/null
+echo "id root -> código $?"
+id noexiste123 &>/dev/null
+echo "id noexiste123 -> código $?"

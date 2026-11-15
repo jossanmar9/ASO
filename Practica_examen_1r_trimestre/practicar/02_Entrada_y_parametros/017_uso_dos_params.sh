@@ -17,3 +17,9 @@
 
 # Solución:
 
+if [[ $# -ne 2 ]]; then
+    echo "Uso: $0 origen destino"
+    exit 1
+fi
+
+echo "Copiaría $1 en $2"

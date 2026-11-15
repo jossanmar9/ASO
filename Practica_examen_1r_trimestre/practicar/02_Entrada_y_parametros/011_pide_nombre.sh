@@ -14,3 +14,6 @@
 
 # Solución:
 
+read -p "Escribe tu nombre: " nombre
+
+echo "Encantado, $nombre"

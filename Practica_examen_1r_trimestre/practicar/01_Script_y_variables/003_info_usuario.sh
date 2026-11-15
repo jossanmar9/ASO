@@ -15,3 +15,6 @@
 
 # Solución:
 
+echo "Usuario: $USER"
+
+echo "Directorio personal: $HOME"

@@ -14,3 +14,6 @@
 
 # Solución:
 
+echo "Directorio actual: $PWD"
+
+echo "Equipo: $HOSTNAME"

@@ -13,3 +13,4 @@
 
 # Solución:
 
+echo "Los parametros recibidos son: $@"
