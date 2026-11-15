@@ -42,7 +42,7 @@ En aquest repositori es guarden els exercicis, pràctiques, scripts i documentac
 
 ## Pràctica per a exàmens
 
-- [Practica_examen_1r_trimestre](Practica_examen_1r_trimestre/): 162 exercicis de pràctica per a l'examen del 1r trimestre (UT1 Bash + repàs de la pràctica de processos de la UT2), ordenats de fàcil a difícil, amb una carpeta per a practicar i una altra amb les solucions.
+- [Practica examen 1er trimestre](Practica_examen_1r_trimestre/): 162 exercicis de pràctica per a l'examen del 1r trimestre (UT1 Bash + repàs de la pràctica de processos de la UT2), ordenats de fàcil a difícil, amb una carpeta per a practicar i una altra amb les solucions.
 
 ## Estructura del repositori
 
