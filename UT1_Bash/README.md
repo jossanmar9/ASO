@@ -16,6 +16,8 @@ Exercicis i pràctiques de Bash i Shell Scripting.
 
 Chuleta de consulta de la unitat: [`cheatsheet_UT1.md`](cheatsheet_UT1.md)
 
+Exercicis de pràctica per a l'examen: [`../Practica_examen_1r_trimestre/`](../Practica_examen_1r_trimestre/)
+
 ## Ejercicios_Basicos
 
 ### Bàsics
@@ -95,6 +97,16 @@ Chuleta de consulta de la unitat: [`cheatsheet_UT1.md`](cheatsheet_UT1.md)
 - `backup_etc.sh` - Fer una còpia comprimida de /etc i registrar-ho amb logger
 - `gestion_usuarios.sh` - Preparar l'alta o la baixa d'un usuari de l'alumnat
 
+## Pràctica per a l'examen
+
+Per a preparar l'examen, li he demanat a la IA que em genere una col·lecció d'exercicis de pràctica, ordenats de fàcil a difícil. Estan en la carpeta [`Practica_examen_1r_trimestre/`](../Practica_examen_1r_trimestre/), a l'arrel del repositori, dividits en `practicar/` (només l'enunciat) i `resolts/` (amb la solució).
+
+Els de la UT1 són els blocs 1 a 14 (exercicis 001–140) i els 151–160 del bloc 16 (tipus examen):
+
+- **Blocs 1–10**: es poden resoldre només amb la chuleta oficial de l'examen.
+- **Blocs 11–14**: `grep`, `cut`, `tr`, `wc`, `sort`, `sed` i expressions regulars esteses.
+- **Bloc 16**: exercicis tipus examen que ajunten tota la unitat.
+
 ## Valoració personal
 
 Feia dos anys que havia cursat el mòdul d'Implantació de Sistemes Operatius i, per tant, encara recordava alguns dels conceptes bàsics de Bash, però havia oblidat part de la sintaxi i algunes de les ordres.
@@ -103,4 +115,4 @@ Aquesta unitat m'ha servit per refrescar aquests coneixements i tornar a practic
 
 Durant la unitat he utilitzat una eina d'intel·ligència artificial com a suport i tutor: per a demanar explicacions, entendre el funcionament de les ordres, obtindre pistes quan m'he quedat encallat i, en les sessions més complicades, també exemples resolts que he estudiat per entendre com funcionen.
 
-Amb els apunts, la web de l'assignatura i el suport de la IA els exercicis són prou més fàcils que a l'examen. Per això, els conceptes que més em costen, els continuaré practicant amb exercicis semblants per a poder resoldre'ls pel meu compte.
+Amb els apunts, la web de l'assignatura i el suport de la IA els exercicis són prou més fàcils que a l'examen. Per això, els conceptes que més em costen, els continuaré practicant amb els exercicis de la carpeta [`Practica_examen_1r_trimestre/`](../Practica_examen_1r_trimestre/) per a poder resoldre'ls pel meu compte.
